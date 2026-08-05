@@ -1,0 +1,84 @@
+# Task List — NextGen CMA Module 1: User Authentication & Profile Management
+
+## Completed Tasks
+
+### Database & Project Setup
+- `[x]` Initialize Prisma ORM structure (`server/prisma/schema.prisma`)
+  - [schema.prisma](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/prisma/schema.prisma)
+- `[x]` Create environment config template (`server/.env.example`)
+  - [.env.example](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/.env.example)
+- `[x]` Configure ES Modules support in `package.json`
+  - [package.json](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/package.json)
+- `[x]` Create localized development environment file (`server/.env`)
+  - [.env](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/.env)
+
+### Server Bootstrapping & Configuration
+- `[x]` Implement Express application foundation with security middlewares (Helmet, CORS, rate limits, cookie parser)
+  - [app.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/app.js)
+- `[x]` Create server initialization entrypoint
+  - [server.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/server.js)
+- `[x]` Create environment variable validation logic
+  - [env.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/config/env.js)
+- `[x]` Implement Prisma client singleton helper
+  - [db.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/config/db.js)
+
+### Utilities
+- `[x]` Implement custom error class `ApiError.js`
+  - [ApiError.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/utils/ApiError.js)
+- `[x]` Implement standardized REST response utility `ApiResponse.js`
+  - [ApiResponse.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/utils/ApiResponse.js)
+- `[x]` Write JWT token helper utilities (Access / Refresh Token generator/verifier)
+  - [jwt.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/utils/jwt.js)
+- `[x]` Create cryptographically secure OTP generator and mock email sender
+  - [otp.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/utils/otp.js)
+- `[x]` Write password hashing helper utility using `bcryptjs`
+  - [password.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/utils/password.js)
+
+### Request Validation Rules
+- `[x]` Implement authentication validators for registration, login, forgot password, reset password
+  - [auth.validator.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/validators/auth.validator.js)
+- `[x]` Implement profile edit validators
+  - [profile.validator.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/validators/profile.validator.js)
+
+### Initial Middlewares
+- `[x]` Implement global backend error handling middleware
+  - [error.middleware.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/middlewares/error.middleware.js)
+
+---
+
+## Remaining Tasks
+
+### 1. Backend Middlewares
+- `[x]` Create `validation.middleware.js` (Express validator result interceptor)
+  - [validation.middleware.js](file:///d:/HIMANSHU_CHINDHALORE/STUDY/PROJECTS/NEXTGEN/server/src/middlewares/validation.middleware.js)
+- `[ ]` Create `auth.middleware.js` (`authenticateUser` and `authorizeRoles` middlewares)
+
+### 2. Backend Services & Controllers
+- `[ ]` Create `auth.service.js` (DB operation encapsulation for registrations, logins, tokens, profile updates, and OTPs)
+- `[ ]` Create `auth.controller.js` (API endpoints logic matching routing handlers)
+
+### 3. Backend Routes & Seeding
+- `[ ]` Create authentication and profile router configuration (`auth.routes.js` and `routes/index.js`)
+- `[ ]` Implement DB Seed script (`server/prisma/seed.js`) to create mock user/admin records
+
+### 4. Client Frontend Infrastructure
+- `[ ]` Initialize Vite React App inside `client/` folder
+- `[ ]` Setup Tailwind CSS configuration with Black, White, Gold, Purple theme colors
+- `[ ]` Setup Axios API service instance (`api.js`) with request interceptors for token refresh handling
+- `[ ]` Implement application global state authentication context `AuthContext.jsx`
+- `[ ]` Set up router protection component wrapper `ProtectedRoute.jsx`
+
+### 5. Client Frontend Pages & Styling
+- `[ ]` Configure React Router DOM base mapping in `App.jsx`
+- `[ ]` Create premium, responsive pages using Tailwind CSS:
+  - `[ ]` Student Register Page (`/register`)
+  - `[ ]` User Login Page (`/login`)
+  - `[ ]` Admin Login Page (`/admin/login`)
+  - `[ ]` Forgot Password Page (`/forgot-password`)
+  - `[ ]` Reset Password Page (`/reset-password`)
+  - `[ ]` User Profile & Edit Page (`/profile`)
+
+### 6. Verification and Integration
+- `[ ]` Synchronize schema models (`prisma db push`) and seed default administrator credentials
+- `[ ]` Verify all backend endpoints using REST queries
+- `[ ]` Run manual walkthrough, ensuring responsive behaviors and toast indicators work as expected

@@ -1,0 +1,557 @@
+// ====================================
+// NextGen CMA — Prisma Database Schema
+// ====================================
+// Tables: users, otp_verifications, refresh_tokens
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------
+// Enums
+// ---------------------
+
+enum Role {
+  STUDENT
+  MENTOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum CmaLevel {
+  FOUNDATION
+  INTER
+  FINAL
+}
+
+enum OtpPurpose {
+  FORGOT_PASSWORD
+}
+
+// ---------------------
+// Users Table
+// ---------------------
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  phone         String   @unique
+  password      String
+  role          Role     @default(STUDENT)
+  profileImage  String?
+  cmaLevel      CmaLevel?
+  targetAttempt String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  otpVerifications OtpVerification[]
+  refreshTokens    RefreshToken[]
+  studyPlans       StudyPlan[]
+  dailyCheckins    DailyCheckin[]
+  habits           Habit[]
+  streak           Streak?
+  reminderSetting  ReminderSetting?
+  mentor           Mentor?
+  bookings         MentorshipBooking[]
+  doubts           Doubt[]
+  doubtReplies     DoubtReply[]
+  performanceReviews PerformanceReview[]
+  adminProfile     AdminUser?
+  activityLogs     ActivityLog[]
+
+  @@map("users")
+}
+
+
+
+// ---------------------
+// OTP Verifications Table
+// ---------------------
+
+model OtpVerification {
+  id        String     @id @default(uuid())
+  userId    String
+  otp       String
+  purpose   OtpPurpose
+  expiresAt DateTime
+  createdAt DateTime   @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([otp])
+  @@map("otp_verifications")
+}
+
+// ---------------------
+// Refresh Tokens Table
+// ---------------------
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+// ---------------------
+// Site Content (Module 2 Brand CMS)
+// ---------------------
+
+model SiteContent {
+  id           String   @id @default(uuid())
+  sectionKey   String   @map("section_key")
+  title        String?
+  subtitle     String?
+  body         String?
+  buttonText   String?  @map("button_text")
+  buttonLink   String?  @map("button_link")
+  imageUrl     String?  @map("image_url")
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([sectionKey])
+  @@map("site_content")
+}
+
+// ---------------------
+// Services Model (Module 3 Services & CMS)
+// ---------------------
+
+model Service {
+  id               String   @id @default(uuid())
+  category         String
+  title            String
+  shortDescription String   @map("short_description")
+  fullDescription  String   @map("full_description")
+  icon             String
+  imageUrl         String?  @map("image_url")
+  displayOrder     Int      @default(0) @map("display_order")
+  isActive         Boolean  @default(true) @map("is_active")
+  ctaText          String?  @map("cta_text")
+  ctaLink          String?  @map("cta_link")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@map("services")
+}
+
+// ---------------------
+// Study Plans (Module 4)
+// ---------------------
+
+model StudyPlan {
+  id                 String             @id @default(uuid())
+  userId             String             @map("user_id")
+  cmaLevel           CmaLevel           @map("cma_level")
+  examDate           DateTime           @map("exam_date")
+  dailyStudyHours    Float              @map("daily_study_hours")
+  startDate          DateTime?          @map("start_date")
+  availableDays      String?            @map("available_days")
+  preferredStartTime String?            @map("preferred_start_time")
+  preferredEndTime   String?            @map("preferred_end_time")
+  status             String             @default("ACTIVE")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  // Relations
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjects           StudyPlanSubject[]
+  dailyTargets       DailyTarget[]
+  weeklyTargets      WeeklyTarget[]
+  revisionCalendar   RevisionCalendar[]
+  dailyCheckins      DailyCheckin[]
+
+  @@index([userId])
+  @@map("study_plans")
+}
+
+model StudyPlanSubject {
+  id              String    @id @default(uuid())
+  planId          String    @map("plan_id")
+  subjectName     String    @map("subject_name")
+  totalTopics     Int       @map("total_topics")
+  completedTopics Int       @map("completed_topics") @default(0)
+  displayOrder    Int       @map("display_order") @default(0)
+
+  // Relations
+  plan            StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@map("study_plan_subjects")
+}
+
+model DailyTarget {
+  id          String    @id @default(uuid())
+  planId      String    @map("plan_id")
+  subjectName String?   @map("subject_name")
+  date        DateTime?
+  topic       String
+  description String?
+  priority    String?   @default("MEDIUM")
+  startTime   String?   @map("start_time")
+  endTime     String?   @map("end_time")
+  isManual    Boolean   @default(false) @map("is_manual")
+  status      String    @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, MISSED, RESCHEDULED
+  studyHours  Float     @default(2.0) @map("study_hours")
+
+  // Relations
+  plan        StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([date])
+  @@map("daily_targets")
+}
+
+model WeeklyTarget {
+  id              String    @id @default(uuid())
+  planId          String    @map("plan_id")
+  weekStart       DateTime  @map("week_start")
+  goalDescription String    @map("goal_description")
+  status          String    @default("PENDING") // PENDING, COMPLETED
+
+  // Relations
+  plan            StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([weekStart])
+  @@map("weekly_targets")
+}
+
+model RevisionCalendar {
+  id            String    @id @default(uuid())
+  planId        String    @map("plan_id")
+  date          DateTime
+  topic         String
+  revisionRound Int       @map("revision_round")
+
+  // Relations
+  plan          StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([date])
+  @@map("revision_calendar")
+}
+
+// ---------------------
+// Accountability (Module 5)
+// ---------------------
+
+model DailyCheckin {
+  id            String     @id @default(uuid())
+  userId        String     @map("user_id")
+  studyPlanId   String?    @map("study_plan_id")
+  date          DateTime   @db.Date
+  hoursStudied  Float      @map("hours_studied")
+  topicsCovered String     @map("topics_covered")
+  moodRating    Int        @map("mood_rating")
+  energyRating  Int        @map("energy_rating")
+  blockers      String?
+  notes         String?
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studyPlan     StudyPlan? @relation(fields: [studyPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([studyPlanId])
+  @@map("daily_checkins")
+}
+
+model Habit {
+  id          String     @id @default(uuid())
+  userId      String     @map("user_id")
+  habitName   String     @map("habit_name")
+  description String?
+  frequency   String     @default("DAILY") // DAILY, WEEKLY, CUSTOM
+  targetValue Float      @map("target_value")
+  unit        String
+  isActive    Boolean    @default(true) @map("is_active")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs        HabitLog[]
+
+  @@index([userId])
+  @@map("habits")
+}
+
+model HabitLog {
+  id             String   @id @default(uuid())
+  habitId        String   @map("habit_id")
+  date           DateTime @db.Date
+  completed      Boolean  @default(false)
+  completedValue Float    @map("completed_value")
+  notes          String?
+
+  // Relations
+  habit          Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@index([habitId])
+  @@map("habit_logs")
+}
+
+model Streak {
+  id              String    @id @default(uuid())
+  userId          String    @unique @map("user_id")
+  currentStreak   Int       @default(0) @map("current_streak")
+  longestStreak   Int       @default(0) @map("longest_streak")
+  lastCheckinDate DateTime? @db.Date @map("last_checkin_date")
+  totalCheckins   Int       @default(0) @map("total_checkins")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("streaks")
+}
+
+model ReminderSetting {
+  id               String   @id @default(uuid())
+  userId           String   @unique @map("user_id")
+  dailyCheckinTime String   @default("20:00") @map("daily_checkin_time")
+  emailEnabled     Boolean  @default(true) @map("email_enabled")
+  whatsappEnabled  Boolean  @default(false) @map("whatsapp_enabled")
+  pushEnabled      Boolean  @default(false) @map("push_enabled")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reminder_settings")
+}
+
+// ---------------------
+// Mentorship (Module 6)
+// ---------------------
+
+model Mentor {
+  id                String               @id @default(uuid())
+  userId            String               @unique @map("user_id")
+  fullName          String               @map("full_name")
+  bio               String               @db.Text
+  profileImage      String?              @map("profile_image")
+  specialization    String
+  experience        Int
+  qualification     String
+  availability      String?
+  rating            Float                @default(5.0)
+  isActive          Boolean              @default(true) @map("is_active")
+  subjects          String?
+  teachingStyle     String?              @map("teaching_style")
+  languages         String?
+  meetingPlatforms  String?              @default("GOOGLE_MEET") @map("meeting_platforms")
+  responseTime      String?              @default("< 2 hours") @map("response_time")
+  linkedinUrl       String?              @map("linkedin_url")
+  websiteUrl        String?              @map("website_url")
+  professionalEmail String?              @map("professional_email")
+  certificates      String?
+  achievements      String?
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  // Relations
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  availabilities    MentorAvailability[]
+  bookings          MentorshipBooking[]
+  doubts            Doubt[]
+  reviews           PerformanceReview[]
+
+  @@map("mentors")
+}
+
+model MentorAvailability {
+  id           String  @id @default(uuid())
+  mentorId     String  @map("mentor_id")
+  dayOfWeek    Int     @map("day_of_week") // 0 = Sunday, 1 = Monday, etc.
+  startTime    String  @map("start_time") // HH:MM
+  endTime      String  @map("end_time") // HH:MM
+  slotDuration Int     @default(30) @map("slot_duration")
+  isAvailable  Boolean @default(true) @map("is_available")
+
+  // Relations
+  mentor Mentor @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@index([mentorId])
+  @@map("mentor_availability")
+}
+
+model MentorshipBooking {
+  id              String   @id @default(uuid())
+  studentId       String   @map("student_id")
+  mentorId        String   @map("mentor_id")
+  scheduledAt     DateTime @map("scheduled_at")
+  meetingLink     String?  @map("meeting_link")
+  meetingPlatform String   @default("GOOGLE_MEET") @map("meeting_platform") // GOOGLE_MEET, ZOOM, OFFLINE
+  status          String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, RESCHEDULED, COMPLETED
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  mentor  Mentor @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([mentorId])
+  @@map("mentorship_bookings")
+}
+
+model Doubt {
+  id            String   @id @default(uuid())
+  studentId     String   @map("student_id")
+  mentorId      String   @map("mentor_id")
+  subject       String
+  questionTitle String   @map("question_title")
+  questionText  String   @map("question_text") @db.Text
+  attachmentUrl String?  @map("attachment_url")
+  priority      String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  status        String   @default("OPEN") // OPEN, PENDING_REPLY, RESOLVED
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  student User         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  mentor  Mentor       @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  replies DoubtReply[]
+
+  @@index([studentId])
+  @@index([mentorId])
+  @@map("doubts")
+}
+
+model DoubtReply {
+  id            String   @id @default(uuid())
+  doubtId       String   @map("doubt_id")
+  senderId      String   @map("sender_id")
+  message       String   @db.Text
+  attachmentUrl String?  @map("attachment_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  doubt  Doubt @relation(fields: [doubtId], references: [id], onDelete: Cascade)
+  sender User  @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([doubtId])
+  @@index([senderId])
+  @@map("doubt_replies")
+}
+
+model PerformanceReview {
+  id             String    @id @default(uuid())
+  studentId      String    @map("student_id")
+  mentorId       String    @map("mentor_id")
+  reviewDate     DateTime  @map("review_date")
+  overallScore   Float     @map("overall_score")
+  strengths      String    @db.Text
+  weaknesses     String    @db.Text
+  actionItems    String    @map("action_items") @db.Text
+  mentorNotes    String?   @map("mentor_notes") @db.Text
+  nextReviewDate DateTime? @map("next_review_date")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  mentor  Mentor @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([mentorId])
+  @@map("performance_reviews")
+}
+
+// ---------------------
+// Admin Dashboard (Module 13)
+// ---------------------
+
+model AdminUser {
+  id              String   @id @default(uuid())
+  userId          String   @unique @map("user_id")
+  permissionsJson String   @map("permissions_json") @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_users")
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  adminId     String?  @map("admin_id")
+  action      String
+  targetTable String   @map("target_table")
+  targetId    String?  @map("target_id")
+  description String   @db.Text
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([adminId])
+  @@map("activity_logs")
+}
+
+// ---------------------
+// Contact Messages Model (Module 11)
+// ---------------------
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String
+  subject   String
+  message   String   @db.Text
+  status    String   @default("UNREAD") // UNREAD, READ, REPLIED, DELETED
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_messages")
+}
+
+// ---------------------
+// Social Links Model (Module 11)
+// ---------------------
+
+model SocialLink {
+  id           String   @id @default(uuid())
+  platform     String   // e.g. WHATSAPP, TELEGRAM, INSTAGRAM, YOUTUBE, FACEBOOK, LINKEDIN, TWITTER, EMAIL, WEBSITE
+  displayName  String   @map("display_name")
+  url          String
+  icon         String
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("social_links")
+}
+

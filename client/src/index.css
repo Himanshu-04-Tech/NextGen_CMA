@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-white font-sans selection:bg-brand-gold selection:text-black;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(111, 45, 168, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(75, 0, 130, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Custom Premium Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-brand-dark;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-800 rounded-full hover:bg-brand-gold-dark transition-all duration-300;
+  }
+}
+
+@layer components {
+  /* Premium Glassmorphic Container */
+  .glass-card {
+    @apply bg-brand-card/75 border border-brand-border backdrop-blur-md rounded-2xl p-8 transition-all duration-300;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.02);
+  }
+  
+  .glass-card:hover {
+    @apply border-zinc-700/60;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(111, 45, 168, 0.05);
+  }
+
+  /* Metallic Gold Border Accent */
+  .gold-border-focus {
+    @apply border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all duration-200;
+  }
+
+  /* Premium Buttons */
+  .btn-gold {
+    @apply relative overflow-hidden bg-gradient-to-r from-brand-gold-dark via-brand-gold to-brand-gold-dark text-black font-semibold rounded-lg px-6 py-3 transition-all duration-300 transform active:scale-95 shadow-gold-glow hover:shadow-lg hover:shadow-brand-gold/20 hover:brightness-110 flex items-center justify-center gap-2;
+  }
+
+  .btn-purple {
+    @apply relative overflow-hidden bg-gradient-to-r from-brand-purple-dark via-brand-purple to-brand-purple-dark text-white font-semibold rounded-lg px-6 py-3 transition-all duration-300 transform active:scale-95 shadow-purple-glow hover:shadow-lg hover:shadow-brand-purple/20 hover:brightness-110 flex items-center justify-center gap-2;
+  }
+
+  .btn-outline {
+    @apply border border-brand-border hover:border-brand-gold hover:text-brand-gold bg-brand-card/50 text-white font-medium rounded-lg px-6 py-3 transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  /* Elegant Input Layout */
+  .form-input {
+    @apply w-full bg-black/40 border border-brand-border rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 gold-border-focus outline-none font-sans text-sm;
+  }
+
+  .form-label {
+    @apply block text-xs font-semibold tracking-wider uppercase text-zinc-400 mb-2 font-display;
+  }
+
+  /* Micro-animations */
+  .shimmer-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-400 to-white bg-[length:200%_auto] animate-shimmer;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 4s linear infinite;
+}
+
+/* Gold Loading Spinner Custom Animation */
+.spinner-gold {
+  border-top-color: #D4AF37;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
