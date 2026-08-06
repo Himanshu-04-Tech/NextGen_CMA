@@ -81,4 +81,4 @@
 ### 6. Verification and Integration
 - `[ ]` Synchronize schema models (`prisma db push`) and seed default administrator credentials
 - `[ ]` Verify all backend endpoints using REST queries
-- `[ ]` Run manual walkthrough, ensuring responsive behaviors and toast indicators work as expected
+- `[ ]` Run manual walkthrough, ensuring responsive behaviors and toast indicators work as expecte
