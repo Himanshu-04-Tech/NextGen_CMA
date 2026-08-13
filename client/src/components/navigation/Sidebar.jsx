@@ -25,6 +25,7 @@ import {
   Globe
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import logoImg from '../../images/logo.jpeg';
 
 const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
   const { user, logout } = useAuth();
@@ -131,17 +132,21 @@ const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
         <div className="h-16 flex items-center justify-between px-4 border-b border-brand-border/60">
           {!isCollapsed ? (
             <Link to="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold flex items-center justify-center shadow-gold-glow">
-                <span className="text-black font-black text-sm">N</span>
-              </div>
+              <img
+                src={logoImg}
+                alt="NextGen CMA Logo"
+                className="w-8 h-8 rounded-full object-cover shadow-gold-glow border border-brand-gold/40 group-hover:scale-105 transition-transform"
+              />
               <span className="text-white font-bold text-sm tracking-tight">
                 NextGen <span className="text-brand-gold">CMA</span>
               </span>
             </Link>
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold flex items-center justify-center mx-auto shadow-gold-glow">
-              <span className="text-black font-black text-sm">N</span>
-            </div>
+            <img
+              src={logoImg}
+              alt="NextGen CMA Logo"
+              className="w-8 h-8 rounded-full object-cover mx-auto shadow-gold-glow border border-brand-gold/40 hover:scale-105 transition-transform"
+            />
           )}
 
           {/* Toggle button */}

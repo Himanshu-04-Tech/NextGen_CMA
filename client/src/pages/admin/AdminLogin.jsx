@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { ShieldAlert, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
+import logoImg from '../../images/logo.jpeg';
 
 const AdminLogin = () => {
   const { adminLogin } = useAuth();
@@ -38,9 +39,11 @@ const AdminLogin = () => {
 
       <div className="w-full max-w-sm bg-black/40 backdrop-blur-md border border-brand-border rounded-2xl p-8 space-y-6 relative z-10">
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-gold-dark to-brand-gold flex items-center justify-center mx-auto shadow-gold-glow">
-            <ShieldAlert className="text-black" size={24} />
-          </div>
+          <img
+            src={logoImg}
+            alt="NextGen CMA Logo"
+            className="w-14 h-14 rounded-full object-cover mx-auto shadow-gold-glow border-2 border-brand-gold/40"
+          />
           <h2 className="text-lg font-black text-white font-display uppercase tracking-wider">
             Governance Console
           </h2>

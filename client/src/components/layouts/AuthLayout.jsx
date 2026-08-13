@@ -5,6 +5,7 @@
  */
 
 import { Link } from 'react-router-dom';
+import logoImg from '../../images/logo.jpeg';
 
 const AuthLayout = ({ children, title, subtitle, showLogo = true }) => {
   return (
@@ -33,9 +34,11 @@ const AuthLayout = ({ children, title, subtitle, showLogo = true }) => {
             to="/"
             className="flex flex-col items-center gap-3 mb-8 group"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold-dark flex items-center justify-center shadow-gold-glow group-hover:scale-105 transition-transform duration-300">
-              <span className="text-black font-black text-2xl font-display">N</span>
-            </div>
+            <img
+              src={logoImg}
+              alt="NextGen CMA Logo"
+              className="w-16 h-16 rounded-full object-cover shadow-gold-glow group-hover:scale-105 transition-transform duration-300 border-2 border-brand-gold/40"
+            />
             <div className="text-center">
               <span className="text-white font-bold font-display text-xl tracking-tight">
                 NextGen <span className="text-brand-gold">CMA</span>

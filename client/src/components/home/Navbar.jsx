@@ -9,6 +9,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, Shield, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 
+import logoImg from '../../images/logo.jpeg';
+
 const Navbar = ({ data }) => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
@@ -52,9 +54,11 @@ const Navbar = ({ data }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold-dark flex items-center justify-center shadow-gold-glow group-hover:scale-105 transition-transform duration-300">
-            <span className="text-black font-black text-lg font-display">N</span>
-          </div>
+          <img
+            src={logoImg}
+            alt="NextGen CMA Logo"
+            className="w-10 h-10 rounded-full object-cover shadow-gold-glow group-hover:scale-105 transition-transform duration-300 border border-brand-gold/40"
+          />
           <span className="text-white font-bold font-display text-lg tracking-tight">
             {logoText} <span className="text-brand-gold">CMA</span>
           </span>

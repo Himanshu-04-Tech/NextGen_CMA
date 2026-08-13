@@ -7,6 +7,6 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true, // exposes the server on network
-    allowedHosts: ['.trycloudflare.com', 'pmid-characteristic-survey-anderson.trycloudflare.com'],
+    allowedHosts: true, // Allow all host headers including any Cloudflare tunnel URL
   }
 })

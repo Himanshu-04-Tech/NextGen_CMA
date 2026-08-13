@@ -5,6 +5,7 @@
 import { Link } from 'react-router-dom';
 import { Home, ArrowLeft } from 'lucide-react';
 import Button from './Button.jsx';
+import logoImg from '../../images/logo.jpeg';
 
 const NotFound = () => {
   return (
@@ -22,9 +23,11 @@ const NotFound = () => {
             404
           </span>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold-dark flex items-center justify-center shadow-gold-glow">
-              <span className="text-black font-black text-3xl font-display">N</span>
-            </div>
+            <img
+              src={logoImg}
+              alt="NextGen CMA Logo"
+              className="w-20 h-20 rounded-full object-cover shadow-gold-glow border-2 border-brand-gold/40"
+            />
           </div>
         </div>
 

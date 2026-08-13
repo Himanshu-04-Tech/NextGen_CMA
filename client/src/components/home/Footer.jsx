@@ -13,6 +13,8 @@ import {
   Mail,
 } from 'lucide-react';
 
+import logoImg from '../../images/logo.jpeg';
+
 const Footer = ({ data }) => {
   const logoText = data?.title || 'NextGen';
   const defaultDesc = data?.subtitle || 'Helping CMA students stay consistent through study planning, accountability, mentorship, and performance tracking.';
@@ -34,9 +36,11 @@ const Footer = ({ data }) => {
         {/* Brand & Social Column */}
         <div className="md:col-span-8 space-y-6">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold-dark flex items-center justify-center shadow-gold-glow group-hover:scale-105 transition-transform duration-300">
-              <span className="text-black font-black text-lg font-display">N</span>
-            </div>
+            <img
+              src={logoImg}
+              alt="NextGen CMA Logo"
+              className="w-10 h-10 rounded-full object-cover shadow-gold-glow group-hover:scale-105 transition-transform duration-300 border border-brand-gold/40"
+            />
             <span className="text-white font-bold font-display text-lg tracking-tight">
               {logoText} <span className="text-brand-gold">CMA</span>
             </span>

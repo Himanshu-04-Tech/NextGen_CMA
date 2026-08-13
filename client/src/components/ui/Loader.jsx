@@ -3,6 +3,7 @@
  */
 
 import Spinner from './Spinner.jsx';
+import logoImg from '../../images/logo.jpeg';
 
 const Loader = ({ fullScreen = false, message = 'Loading…' }) => {
   if (fullScreen) {
@@ -16,9 +17,11 @@ const Loader = ({ fullScreen = false, message = 'Loading…' }) => {
 
         <div className="relative flex flex-col items-center gap-6">
           {/* Logo mark */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-gold-dark via-brand-gold to-brand-gold-dark flex items-center justify-center shadow-gold-glow">
-            <span className="text-black font-bold text-2xl font-display">N</span>
-          </div>
+          <img
+            src={logoImg}
+            alt="NextGen CMA Logo"
+            className="w-16 h-16 rounded-full object-cover shadow-gold-glow border-2 border-brand-gold/40 animate-pulse"
+          />
 
           <Spinner size="lg" />
 
